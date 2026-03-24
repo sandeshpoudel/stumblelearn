@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -35,6 +36,21 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessPanel(Panel $panel): bool
     {
         return (bool) $this->is_admin;
+    }
+
+    public function savedPosts(): BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\Post::class, 'saved_posts')->withTimestamps();
+    }
+
+    public function ignoredPosts(): BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\Post::class, 'ignored_posts')->withTimestamps();
+    }
+
+    public function understoodPosts(): BelongsToMany
+    {
+        return $this->belongsToMany(\App\Models\Post::class, 'understood_posts')->withPivot('points')->withTimestamps();
     }
 
 }
