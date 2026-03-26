@@ -15,6 +15,21 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('learn')" :active="request()->routeIs('learn*')">
+                        {{ __('Learn') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('saved')" :active="request()->routeIs('saved*')">
+                        {{ __('Saved') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('progress')" :active="request()->routeIs('progress*')">
+                        {{ __('Progress') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('ignored')" :active="request()->routeIs('ignored*')">
+                        {{ __('Ignored') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -70,6 +85,23 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('learn')" :active="request()->routeIs('learn*')">
+                {{ __('Learn') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('saved')" :active="request()->routeIs('saved*')">
+                {{ __('Saved') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('progress')" :active="request()->routeIs('progress*')">
+                {{ __('Progress') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('ignored')" :active="request()->routeIs('ignored*')">
+                {{ __('Ignored') }}
+            </x-responsive-nav-link>
+
         </div>
 
         <!-- Responsive Settings Options -->
