@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Subject extends Model
 {
@@ -15,8 +16,13 @@ class Subject extends Model
         return $this->belongsTo(Course::class);
     }
 
-    public function posts(): HasMany
+    // public function posts(): HasMany
+    // {
+    //     return $this->hasMany(Post::class);
+    // }
+    
+    public function posts(): BelongsToMany
     {
-        return $this->hasMany(Post::class);
+        return $this->belongsToMany(Post::class, 'post_subject')->withTimestamps();
     }
 }
