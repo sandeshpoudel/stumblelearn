@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Course extends Model
 {
     protected $fillable = ['name', 'slug'];
 
-    public function subjects(): HasMany
+    public function subjects(): BelongsToMany
     {
-        return $this->hasMany(Subject::class);
+        return $this->belongsToMany(Subject::class)->withTimestamps();
     }
 }

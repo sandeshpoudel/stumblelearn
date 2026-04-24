@@ -14,16 +14,25 @@ class SubjectsTable
     {
         return $table
             ->columns([
-                TextColumn::make('course.name')
-                    ->searchable(),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('slug')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('courses.name')
+                    ->label('Courses')
+                    ->badge()
+                    ->separator(', ')
                     ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('posts_count')
+                    ->label('Posts')
+                    ->counts('posts')
+                    ->sortable(),
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()

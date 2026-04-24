@@ -12,13 +12,16 @@ class PostInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('subject.name')
-                    ->label('Subject'),
                 TextEntry::make('title'),
                 TextEntry::make('slug'),
+                TextEntry::make('subjects.name')
+                    ->label('Subjects')
+                    ->badge()
+                    ->separator(', '),
                 TextEntry::make('content')
                     ->columnSpanFull(),
                 IconEntry::make('is_published')
+                    ->label('Published')
                     ->boolean(),
                 TextEntry::make('created_at')
                     ->dateTime()

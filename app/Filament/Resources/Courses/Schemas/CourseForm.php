@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Courses\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class CourseForm
 {
@@ -14,7 +15,12 @@ class CourseForm
                 TextInput::make('name')
                     ->required()
                     ->live(onBlur: true)
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        if ((string) ($get('slug') ?? '') === '') {
+                            $set('slug', Str::slug((string) $state));
+                        }
+                    }),
 
                 TextInput::make('slug')
                     ->required()

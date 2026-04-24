@@ -3,10 +3,11 @@
 namespace App\Filament\Resources\Posts\Schemas;
 
 use App\Models\Course;
+use App\Models\Subject;
 use Filament\Forms\Components\MultiSelect;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
@@ -16,14 +17,13 @@ class PostForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->schema([
-            // UI-only filter (not saved in posts table)
             Select::make('course_filter')
-                ->label('Course')
+                ->label('Course filter')
                 ->options(fn () => Course::query()->orderBy('name')->pluck('name', 'id')->all())
                 ->searchable()
                 ->live()
                 ->dehydrated(false)
-                ->helperText('Choose a course to filter subjects.'),
+                ->helperText('Optional: choose a course to narrow the reusable subject list.'),
 
             MultiSelect::make('subjects')
                 ->relationship('subjects', 'name')
@@ -32,29 +32,29 @@ class PostForm
                 ->searchable()
                 ->preload()
                 ->options(function (callable $get) {
+                    $query = Subject::query()->with('courses')->orderBy('name');
                     $courseId = $get('course_filter');
 
-                    // If no course chosen, show all subjects but with clear labels
-                    $query = \App\Models\Subject::query()->with('course')->orderBy('name');
-
                     if ($courseId) {
-                        $query->where('course_id', $courseId);
+                        $query->whereHas('courses', fn ($courseQuery) => $courseQuery->whereKey($courseId));
                     }
 
-                    return $query->get()->mapWithKeys(function ($subject) {
+                    return $query->get()->mapWithKeys(function (Subject $subject) {
+                        $courses = $subject->courses->pluck('name')->join(', ');
+
                         return [
-                            $subject->id => $subject->course->name . ' — ' . $subject->name,
+                            $subject->id => $subject->name . ($courses ? ' - ' . $courses : ''),
                         ];
                     })->all();
                 })
-                ->helperText('You can select multiple subjects (e.g., DSA in BCA + BIT + BICTE).'),
+                ->helperText('Select every subject this post should appear under.'),
 
             TextInput::make('title')
                 ->required()
                 ->live(onBlur: true)
-                ->afterStateUpdated(function ($state, callable $set, $get) {
-                    $currentSlug = (string) ($get('slug') ?? '');
-                    if ($currentSlug === '') {
+                ->maxLength(255)
+                ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                    if ((string) ($get('slug') ?? '') === '') {
                         $set('slug', Str::slug((string) $state));
                     }
                 }),
@@ -67,9 +67,11 @@ class PostForm
 
             Textarea::make('content')
                 ->required()
+                ->rows(8)
                 ->columnSpanFull(),
 
             Toggle::make('is_published')
+                ->label('Published')
                 ->default(true),
         ]);
     }

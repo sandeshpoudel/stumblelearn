@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Post;
-use App\Models\Subject;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -24,14 +23,17 @@ class LearnController extends Controller
     {
         $subjects = $course->subjects()
             ->orderBy('name')
+            ->withCount(['posts' => fn ($query) => $query->where('is_published', true)])
             ->get();
 
         return view('learn.course', compact('course', 'subjects'));
     }
 
-    public function subject(Course $course, Subject $subject): View
+    public function subject(Course $course, string $subject): View
     {
-        abort_unless($subject->course_id === $course->id, 404);
+        $subject = $course->subjects()
+            ->where('subjects.slug', $subject)
+            ->firstOrFail();
 
         $user = request()->user();
 
@@ -40,9 +42,10 @@ class LearnController extends Controller
         $understoodIds = $user->understoodPosts()->pluck('posts.id');
 
         $post = $subject->posts()
-            ->where('is_published', true)
-            ->whereNotIn('id', $ignoredIds)
-            ->whereNotIn('id', $understoodIds)
+            ->where('posts.is_published', true)
+            ->whereNotIn('posts.id', $ignoredIds)
+            ->whereNotIn('posts.id', $understoodIds)
+            ->with('subjects.courses')
             ->inRandomOrder()
             ->first();
 

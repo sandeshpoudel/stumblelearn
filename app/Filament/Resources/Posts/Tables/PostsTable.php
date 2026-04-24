@@ -16,18 +16,25 @@ class PostsTable
     {
         return $table
             ->columns([
-                TextColumn::make('subject.name')
-                    ->searchable(),
                 TextColumn::make('title')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('subjects.name')
+                    ->label('Subjects')
+                    ->badge()
+                    ->separator(', ')
                     ->searchable(),
+
                 TextColumn::make('slug')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(),
+
                 IconColumn::make('is_published')
-                    ->boolean(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Published')
+                    ->boolean()
+                    ->sortable(),
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()

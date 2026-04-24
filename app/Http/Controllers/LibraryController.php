@@ -13,7 +13,7 @@ class LibraryController extends Controller
     {
         $posts = $request->user()
             ->savedPosts()
-            ->with(['subject.course'])
+            ->with(['subjects.courses'])
             ->orderByPivot('created_at', 'desc')
             ->get();
 
@@ -31,7 +31,7 @@ class LibraryController extends Controller
     {
         $understood = $request->user()
             ->understoodPosts()
-            ->with(['subject.course'])
+            ->with(['subjects.courses'])
             ->orderByPivot('created_at', 'desc')
             ->get();
 
@@ -53,7 +53,7 @@ class LibraryController extends Controller
     {
         $posts = $request->user()
             ->ignoredPosts()
-            ->with(['subject.course'])
+            ->with(['subjects.courses'])
             ->orderByPivot('created_at', 'desc')
             ->get();
 

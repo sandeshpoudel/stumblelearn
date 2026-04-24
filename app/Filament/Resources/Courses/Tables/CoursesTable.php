@@ -23,6 +23,11 @@ class CoursesTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('subjects_count')
+                    ->label('Subjects')
+                    ->counts('subjects')
+                    ->sortable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
